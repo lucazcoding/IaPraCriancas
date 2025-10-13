@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Quiz: Inteligência Artificial para Crianças</title>
+  <style>
+    :root{
+      --bg:#f7fbff; --card:#ffffff; --accent:#2b6cb0; --accent-2:#ff7ab6; --text:#073b4c;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:var(--text);background:linear-gradient(180deg,var(--bg),#eef7ff);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .app{width:100%;max-width:980px;background:var(--card);border-radius:14px;box-shadow:0 10px 30px rgba(10,20,40,0.08);overflow:hidden}
+    header{display:flex;gap:16px;align-items:center;padding:18px 24px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+    header h1{font-size:20px;margin:0}
+    header p{margin:0;opacity:0.95;font-size:13px}
+    .content{padding:28px}
+    .progress{height:12px;background:#e6f0ff;border-radius:999px;overflow:hidden;margin-bottom:18px}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0}
+    .card{background:linear-gradient(180deg,#ffffff, #fbfdff);border-radius:12px;padding:20px;border:1px solid #eef6ff}
+    .qtitle{font-size:18px;margin:0 0 8px 0}
+    .qtext{font-size:22px;margin:0 0 14px 0}
+    .options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .opt{padding:12px;border-radius:10px;border:2px solid #eef6ff;background:#fff;cursor:pointer;font-weight:600;transition:transform .08s ease,box-shadow .08s ease}
+    .opt:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(10,20,40,0.06)}
+    .opt.correct{border-color:#2ecc71;background:linear-gradient(180deg,#ecfff3,#e6fff0)}
+    .opt.wrong{border-color:#ff6b6b;background:linear-gradient(180deg,#fff2f2,#fff6f6)}
+    .controls{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:16px}
+    .btn{background:var(--accent);color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn.ghost{background:transparent;color:var(--accent);border:2px solid rgba(255,255,255,0.12)}
+    .small{font-size:14px;color:#54707a}
+    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+    .score-box{display:flex;gap:8px;align-items:center}
+    .badge{background:#fff;border-radius:8px;padding:6px 10px;font-weight:700;border:1px solid #eef6ff}
+    .result{padding:20px;text-align:center}
+    .result h2{margin:0 0 10px 0}
+    .explain{margin-top:12px;background:#f7fbff;padding:10px;border-radius:8px;border:1px dashed #e3f0ff;color:#11557c}
+    @media (max-width:640px){.options{grid-template-columns:1fr}.qtext{font-size:20px}}
+  </style>
+</head>
+<body>
+  <div class="app" role="application">
+    <header>
+      <div style="display:flex;flex-direction:column">
+        <h1>Quiz: Inteligência Artificial para Crianças 🤖</h1>
+        <p>Aprenda brincando — perguntas fáceis, explicações curtas e diversão!</p>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div class="small">Perguntas: <strong id="total">0</strong></div>
+        <div class="small">Mantenha a curiosidade viva! ✨</div>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+
+      <div class="card" id="quizCard">
+        <div>
+          <div class="qtitle small">Pergunta <span id="index">1</span> de <span id="count">20</span></div>
+          <h2 class="qtext" id="question">Carregando...</h2>
+        </div>
+
+        <div class="options" id="options"></div>
+
+        <div class="controls">
+          <div class="score-box">
+            <div class="badge">Pontuação: <span id="score">0</span></div>
+            <div class="small" style="margin-left:8px">Acertos: <span id="hits">0</span></div>
+          </div>
+          <div>
+            <button class="btn" id="prevBtn">Anterior</button>
+            <button class="btn" id="nextBtn">Próximo</button>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="small">Dica: Responda, depois veja uma explicação curta ✅</div>
+          <div class="small">Tempo recomendado: 10–20s por pergunta</div>
+        </div>
+      </div>
+
+      <div id="result" style="display:none" class="card result">
+        <h2>Parabéns! 🎉</h2>
+        <p id="resultText">Você terminou o quiz.</p>
+        <div style="margin-top:12px">
+          <strong>Pontuação:</strong> <span id="finalScore">0</span> / <span id="maxScore">0</span>
+        </div>
+        <div class="explain" id="finalMessage"></div>
+        <div style="margin-top:16px">
+          <button class="btn" id="restart">Refazer Quiz</button>
+          <button class="btn" id="download" style="margin-left:8px;background:#ff7ab6">Baixar resultados</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Lista de perguntas (20+) sobre IA em linguagem simples para crianças
+    const QUESTIONS = [
+      {q: 'O que é Inteligência Artificial (IA)? 🤖',
+       opts: ['Um tipo de computador que aprende','Um brinquedo','Um filme','Um animal'],
+       a:0,
+       explain:'IA é quando computadores aprendem com exemplos para ajudar as pessoas.'},
+      {q: 'Onde podemos ver IA no dia a dia?',
+       opts: ['Em celulares e jogos','Só em filmes','Só em robôs gigantes','Em plantas'],
+       a:0,
+       explain:'IA está em nosso celular, em jogos, nas recomendações de vídeos e assistentes.'},
+      {q: 'O que um assistente virtual faz com IA?',
+       opts: ['Responde perguntas e ajuda','Faz mágica','Voa','Canta sozinho'],
+       a:0,
+       explain:'Siri, Alexa e Google Assistente usam IA para entender e responder.'},
+      {q: 'Como os jogos usam IA?',
+       opts: ['Para controlar inimigos e ajudar no jogo','Para dar comida ao jogador','Para desligar o console','Para mudar o controle'],
+       a:0,
+       explain:'A IA faz inimigos e personagens parecerem inteligentes e divertidos.'},
+      {q: 'A IA pode aprender sozinha?',
+       opts: ['Sim, aprendendo com exemplos','Não, ela só repete','Só se for mágica','Só em desenhos'],
+       a:0,
+       explain:'Alguns sistemas aprendem com muitos exemplos, como quando treinamos um cachorro.'},
+      {q: 'A IA tem sentimentos como nós?',
+       opts: ['Não, mas pode parecer que tem','Sim, exatamente iguais','Só quando quer','Depende do telefone'],
+       a:0,
+       explain:'IA não sente; ela só segue regras e padrões.'},
+      {q: 'Como a IA ajuda médicos?',
+       opts: ['Ajudando a descobrir doenças mais rápido','Fazendo remédios sozinha','Trocando curativos','Dando receitas de bolo'],
+       a:0,
+       explain:'IA pode analisar imagens e ajudar médicos a encontrar problemas cedo.'},
+      {q: 'Qual é um exemplo de IA que ajuda no dia a dia?',
+       opts: ['Recomendação de vídeos no YouTube','Lápis e borracha','Mesa','Chaveiro'],
+       a:0,
+       explain:'Plataformas usam IA para sugerir vídeos que você provavelmente vai gostar.'},
+      {q: 'A IA é sempre boa?',
+       opts: ['Depende de como as pessoas a usam','Sempre boa','Sempre má','É só brincadeira'],
+       a:0,
+       explain:'IA pode ajudar muito, mas se usada errado pode causar problemas.'},
+      {q: 'O que é "dados" para a IA?',
+       opts: ['Informações que ajudam a IA aprender','Comida para robôs','Brinquedos','Roupas'],
+       a:0,
+       explain:'Dados são exemplos e informações usados para ensinar a IA.'},
+      {q: 'Como a IA aprende a reconhecer imagens?',
+       opts: ['Mostrando muitas imagens e dizendo o que é','Apenas olhando uma vez','Escutando música','Falando alto'],
+       a:0,
+       explain:'Ela vê muitas imagens e aprende quais características importam.'},
+      {q: 'O que é um robô com IA?',
+       opts: ['Um robô que pode tomar decisões simples','Um boneco de pelúcia','Uma lâmpada','Uma cadeira'],
+       a:0,
+       explain:'Robôs com IA podem realizar tarefas e responder ao ambiente.'},
+      {q: 'IA pode ajudar nas tarefas da escola?',
+       opts: ['Sim, oferecendo explicações e jogos educativos','Não, só atrapalha','Só faz a lição por você','Só serve para jogar'],
+       a:0,
+       explain:'Ferramentas educativas com IA explicam e adaptam o conteúdo ao ritmo da criança.'},
+      {q: 'O que é "treinar" uma IA?',
+       opts: ['Mostrar muitos exemplos para que ela aprenda','Gritar com o computador','Colocar roupa no robô','Deixar ela dormir'],
+       a:0,
+       explain:'Treinar é ensinar: mostrar exemplos e dizer o que é certo.'},
+      {q: 'Quem cria a IA?',
+       opts: ['Pessoas chamadas desenvolvedores e cientistas','Robôs sozinhos','O vento','As plantas'],
+       a:0,
+       explain:'Pessoas escrevem programas e montam os exemplos para ensinar a IA.'},
+      {q: 'IA pode errar?',
+       opts: ['Sim, porque aprende de exemplos imperfeitos','Não, ela acerta sempre','Só erra quando chove','Só erra de noite'],
+       a:0,
+       explain:'Se os exemplos estiverem errados, a IA pode aprender errado também.'},
+      {q: 'O que significa "algoritmo"?',
+       opts: ['Receita de passos que o computador segue','Um tipo de comida','Um brinquedo','Uma música'],
+       a:0,
+       explain:'Algoritmo é um conjunto de passos (como uma receita) que a IA segue.'},
+      {q: 'Como podemos usar IA com segurança?',
+       opts: ['Com regras e pessoas cuidando do uso','Deixar sem supervisão','Nunca usar','Somente à noite'],
+       a:0,
+       explain:'Regras, privacidade e supervisão ajudam a IA ser segura e justa.'},
+      {q: 'Por que a IA é útil?',
+       opts: ['Porque ajuda a resolver problemas rápidos e repetitivos','Porque faz bagunça','Porque substitui brincadeiras','Porque cozinha sozinho'],
+       a:0,
+       explain:'IA ajuda em tarefas repetitivas e permite que pessoas foquem no que importa.'},
+      {q: 'O que você pode aprender brincando com IA?',
+       opts: ['A programar, a pensar criticamente e a ser curioso','A dormir mais','A não estudar','A correr mais rápido'],
+       a:0,
+       explain:'Brincando com ferramentas de IA você aprende lógica, curiosidade e programação simples.'}
+    ];
+
+    // App state
+    let index = 0;
+    let score = 0;
+    let hits = 0;
+    const total = QUESTIONS.length;
+
+    // Elements
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const indexEl = document.getElementById('index');
+    const countEl = document.getElementById('count');
+    const scoreEl = document.getElementById('score');
+    const hitsEl = document.getElementById('hits');
+    const barEl = document.getElementById('bar');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const resultCard = document.getElementById('result');
+    const quizCard = document.getElementById('quizCard');
+    const totalEl = document.getElementById('total');
+    const finalScoreEl = document.getElementById('finalScore');
+    const maxScoreEl = document.getElementById('maxScore');
+    const finalMessage = document.getElementById('finalMessage');
+
+    totalEl.textContent = total;
+    countEl.textContent = total;
+
+    function render(){
+      const item = QUESTIONS[index];
+      indexEl.textContent = index+1;
+      questionEl.textContent = item.q;
+      optionsEl.innerHTML = '';
+      item.opts.forEach((opt,i)=>{
+        const btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.textContent = opt;
+        btn.setAttribute('data-i', i);
+        btn.addEventListener('click', onAnswer);
+        optionsEl.appendChild(btn);
+      });
+      updateProgress();
+    }
+
+    function updateProgress(){
+      const pct = Math.round(((index+1)/total)*100);
+      barEl.style.width = pct + '%';
+      scoreEl.textContent = score;
+      hitsEl.textContent = hits;
+    }
+
+    function onAnswer(e){
+      const btn = e.currentTarget;
+      const chosen = Number(btn.getAttribute('data-i'));
+      const correct = QUESTIONS[index].a;
+
+      // disable future clicks
+      Array.from(optionsEl.children).forEach(b=>b.disabled = true);
+
+      if(chosen === correct){
+        btn.classList.add('correct');
+        score += 10; hits += 1;
+      } else {
+        btn.classList.add('wrong');
+        // highlight correct
+        const correctBtn = Array.from(optionsEl.children).find(b=>Number(b.getAttribute('data-i'))===correct);
+        if(correctBtn) correctBtn.classList.add('correct');
+      }
+
+      // show short explanation
+      const expl = document.createElement('div');
+      expl.className = 'explain';
+      expl.textContent = QUESTIONS[index].explain;
+      quizCard.appendChild(expl);
+
+      updateProgress();
+    }
+
+    prevBtn.addEventListener('click', ()=>{
+      if(index>0){
+        index -= 1; resetCard(); render();
+      }
+    });
+
+    nextBtn.addEventListener('click', ()=>{
+      if(index < total-1){
+        index += 1; resetCard(); render();
+      } else {
+        // finish
+        finishQuiz();
+      }
+    });
+
+    function resetCard(){
+      // remove explanation if exists
+      const ex = quizCard.querySelector('.explain');
+      if(ex) ex.remove();
+    }
+
+    function finishQuiz(){
+      quizCard.style.display = 'none';
+      resultCard.style.display = 'block';
+      finalScoreEl.textContent = score;
+      maxScoreEl.textContent = total*10;
+      // message
+      const pct = Math.round((score/(total*10))*100);
+      let msg = '';
+      if(pct >= 80) msg = 'Excelente! Você entendeu muito bem sobre IA 🚀';
+      else if(pct >= 50) msg = 'Muito bem! Continue praticando e aprendendo ✨';
+      else msg = 'Ótimo começo! Continue curioso e tente de novo 🙂';
+      finalMessage.textContent = msg + '\n\nLembre-se: IA ajuda as pessoas quando usada com responsabilidade.';
+    }
+
+    document.getElementById('restart').addEventListener('click', ()=>{
+      // reset state
+      index = 0; score = 0; hits = 0;
+      quizCard.style.display = 'block';
+      resultCard.style.display = 'none';
+      resetCard(); render(); updateProgress();
+    });
+
+    document.getElementById('download').addEventListener('click', ()=>{
+      const results = {
+        totalQuestions: total,
+        score, hits,
+        date: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(results, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'resultado_quiz_ia.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === 'ArrowRight') nextBtn.click();
+      if(e.key === 'ArrowLeft') prevBtn.click();
+    });
+
+    // initial render
+    render();
+  </script>
+</body>
+</html>

@@ -81,7 +81,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 16px;
       position: relative;
-      min-height: 200px;
+      min-height: 120px;
     }
     .opt {
       padding: 14px;
@@ -185,6 +185,7 @@
       height: 100%;
       opacity: 0.3;
       z-index: 0;
+      pointer-events: none; /* <-- evita que bloqueie cliques no botão */
     }
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
@@ -357,7 +358,9 @@
 
     function triggerConfetti() {
       const canvas = els.confetti;
-      const ctx = canvas.getContext('2d');
+      if (!canvas) return;
+      const ctx = canvas.getContext && canvas.getContext('2d');
+      if (!ctx) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       const particles = [];
@@ -404,9 +407,18 @@
       els.lives.textContent = state.lives;
       els.index.textContent = state.index + 1;
       els.phase.textContent = state.phase;
+      els.count.textContent = state.total;
+      els.total.textContent = state.total;
     }
 
     function render() {
+      // safety: if out of bounds, end quiz
+      if (state.index < 0) state.index = 0;
+      if (state.index >= state.total) {
+        endQuiz('complete');
+        return;
+      }
+
       const item = QUESTIONS[state.index];
       state.answered = false;
       
@@ -466,14 +478,15 @@
         
         if (correctBtn && Math.random() < 0.4) {
           correctBtn.dataset.dodgeCount = 0;
-          correctBtn.onclick = function(e) {
+          // preserve previous behavior but be robust
+          correctBtn.addEventListener('click', function dodgeHandler(e) {
             const dodges = parseInt(this.dataset.dodgeCount || 0);
             if (dodges < 2 && Math.random() < 0.6) {
               this.dataset.dodgeCount = dodges + 1;
               
               const container = els.options;
-              const maxX = container.offsetWidth - this.offsetWidth - 32;
-              const maxY = container.offsetHeight - this.offsetHeight - 32;
+              const maxX = Math.max(0, container.offsetWidth - this.offsetWidth - 32);
+              const maxY = Math.max(0, container.offsetHeight - this.offsetHeight - 32);
               
               this.style.position = 'absolute';
               this.style.left = Math.max(16, Math.random() * maxX) + 'px';
@@ -492,11 +505,12 @@
               return;
             }
             
+            // restore position and proceed
             this.style.position = 'relative';
             this.style.left = '0';
             this.style.top = '0';
             handleAnswer(correct);
-          };
+          }, { once: true });
         }
         
         if (Math.random() < 0.3) {
@@ -536,12 +550,18 @@
       let timeLeft = 10;
       els.timeLeft.textContent = timeLeft;
       
+      if (state.timerId) {
+        clearInterval(state.timerId);
+        state.timerId = null;
+      }
+      
       state.timerId = setInterval(() => {
         timeLeft--;
         els.timeLeft.textContent = timeLeft;
         
         if (timeLeft <= 0) {
           clearInterval(state.timerId);
+          state.timerId = null;
           if (!state.answered) {
             handleAnswer(-1);
           }
@@ -556,6 +576,7 @@
       
       if (state.timerId) {
         clearInterval(state.timerId);
+        state.timerId = null;
         els.timer.style.display = 'none';
       }
       
@@ -564,23 +585,12 @@
       
       buttons.forEach(btn => {
         btn.classList.add('disabled');
-        btn.style.position = 'relative';
-        btn.style.left = '0';
-        btn.style.top = '0';
         const btnIndex = parseInt(btn.dataset.index);
         
         if (btnIndex === correct) {
           btn.classList.add('correct');
         } else if (btnIndex === chosen) {
           btn.classList.add('wrong');
-          
-          if (Math.random() < 0.15) {
-            const taunts = ['😂 Haha!', '🤖 Você caiu!', '😈 Te peguei!', '🎪 Surpresa!'];
-            btn.textContent = taunts[Math.floor(Math.random() * taunts.length)];
-            setTimeout(() => {
-              btn.textContent = QUESTIONS[state.index].opts[btnIndex];
-            }, 1000);
-          }
         }
       });
       
@@ -589,16 +599,6 @@
         state.hits++;
       } else {
         state.lives--;
-        
-        if (Math.random() < 0.1) {
-          const wrongBtn = Array.from(buttons).find(b => parseInt(b.dataset.index) === chosen);
-          if (wrongBtn) {
-            wrongBtn.style.borderColor = 'var(--success)';
-            setTimeout(() => {
-              wrongBtn.style.borderColor = 'var(--error)';
-            }, 400);
-          }
-        }
       }
       
       const expl = document.createElement('div');
@@ -633,18 +633,26 @@
       const currentPhase = Math.floor(state.index / 5);
       
       els.phaseTitle.textContent = `Fase ${currentPhase + 1} Concluída! 🎉`;
-      els.phaseMessage.textContent = `Parabéns! Você é agora um "${phaseNames[currentPhase]}"! Continue sua jornada pelo mundo da IA!`;
+      els.phaseMessage.textContent = `Parabéns! Você é agora um "${phaseNames[currentPhase] || 'Aventureiro da IA'}"! Continue sua jornada pelo mundo da IA!`;
       
       triggerConfetti();
     }
 
-    els.continuePhase.onclick = () => {
-      els.phaseScreen.style.display = 'none';
-      els.quizCard.style.display = 'block';
-      state.index++;
-      state.phase = Math.floor(state.index / 5) + 1;
-      render();
-    };
+    // Use addEventListener (mais resiliente) e prevenção de overflow de índice
+    if (els.continuePhase) {
+      els.continuePhase.addEventListener('click', () => {
+        // se já estivermos no final, encerra
+        if (state.index >= state.total - 1) {
+          endQuiz('complete');
+          return;
+        }
+        els.phaseScreen.style.display = 'none';
+        els.quizCard.style.display = 'block';
+        state.index++;
+        state.phase = Math.floor(state.index / 5) + 1;
+        render();
+      });
+    }
 
     function endQuiz(status) {
       els.quizCard.style.display = 'none';
@@ -684,7 +692,8 @@
       els.starRating.textContent = stars;
     }
 
-    els.restart.onclick = () => {
+    els.restart.addEventListener('click', () => {
+      // reset state
       state = {
         index: 0,
         score: 0,
@@ -699,9 +708,9 @@
       els.result.style.display = 'none';
       els.quizCard.style.display = 'block';
       render();
-    };
+    });
 
-    els.download.onclick = () => {
+    els.download.addEventListener('click', () => {
       const results = {
         totalPerguntas: state.total,
         pontuacao: state.score,
@@ -720,8 +729,10 @@
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
-    };
+    });
 
+    // inicializa contadores e render
+    updateProgress();
     render();
   </script>
 </body>

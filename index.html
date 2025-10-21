@@ -3,61 +3,232 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Quiz: Inteligência Artificial para Crianças</title>
+  <title>Quiz: Aventura da Inteligência Artificial 🚀</title>
   <style>
-    :root{
-      --bg:#f7fbff; --card:#ffffff; --accent:#2b6cb0; --accent-2:#ff7ab6; --text:#073b4c;
+    :root {
+      --bg: #e6f3ff;
+      --card: #ffffff;
+      --accent: #1e90ff;
+      --accent-2: #ff69b4;
+      --text: #022c43;
+      --success: #28a745;
+      --error: #dc3545;
+      --glow: #40c4ff;
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:var(--text);background:linear-gradient(180deg,var(--bg),#eef7ff);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-    .app{width:100%;max-width:980px;background:var(--card);border-radius:14px;box-shadow:0 10px 30px rgba(10,20,40,0.08);overflow:hidden}
-    header{display:flex;gap:16px;align-items:center;padding:18px 24px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
-    header h1{font-size:20px;margin:0}
-    header p{margin:0;opacity:0.95;font-size:13px}
-    .content{padding:28px}
-    .progress{height:12px;background:#e6f0ff;border-radius:999px;overflow:hidden;margin-bottom:18px}
-    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0}
-    .card{background:linear-gradient(180deg,#ffffff, #fbfdff);border-radius:12px;padding:20px;border:1px solid #eef6ff}
-    .qtitle{font-size:18px;margin:0 0 8px 0}
-    .qtext{font-size:22px;margin:0 0 14px 0}
-    .options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .opt{padding:12px;border-radius:10px;border:2px solid #eef6ff;background:#fff;cursor:pointer;font-weight:600;transition:transform .08s ease,box-shadow .08s ease}
-    .opt:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(10,20,40,0.06)}
-    .opt.correct{border-color:#2ecc71;background:linear-gradient(180deg,#ecfff3,#e6fff0)}
-    .opt.wrong{border-color:#ff6b6b;background:linear-gradient(180deg,#fff2f2,#fff6f6)}
-    .controls{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:16px}
-    .btn{background:var(--accent);color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
-    .btn.ghost{background:transparent;color:var(--accent);border:2px solid rgba(255,255,255,0.12)}
-    .small{font-size:14px;color:#54707a}
-    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
-    .score-box{display:flex;gap:8px;align-items:center}
-    .badge{background:#fff;border-radius:8px;padding:6px 10px;font-weight:700;border:1px solid #eef6ff}
-    .result{padding:20px;text-align:center}
-    .result h2{margin:0 0 10px 0}
-    .explain{margin-top:12px;background:#f7fbff;padding:10px;border-radius:8px;border:1px dashed #e3f0ff;color:#11557c}
-    @media (max-width:640px){.options{grid-template-columns:1fr}.qtext{font-size:20px}}
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--text);
+      background: linear-gradient(180deg, var(--bg), #d6eaff);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+      position: relative;
+    }
+    .app {
+      width: 100%;
+      max-width: 980px;
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(10,20,40,0.1);
+      overflow: hidden;
+      position: relative;
+      z-index: 10;
+    }
+    header {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      padding: 20px 28px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    header h1 { font-size: 22px; margin: 0; font-weight: bold; }
+    header p { margin: 0; font-size: 14px; opacity: 0.9; }
+    .content { padding: 32px; }
+    .progress {
+      height: 14px;
+      background: #e0efff;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      width: 0;
+      transition: width 0.4s ease;
+      box-shadow: inset 0 0 10px var(--glow);
+    }
+    .card {
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+      border-radius: 14px;
+      padding: 24px;
+      border: 1px solid #e0efff;
+      text-align: center;
+    }
+    .qtitle { font-size: 18px; margin: 0 0 10px 0; font-weight: bold; }
+    .qtext { font-size: 24px; margin: 0 0 16px 0; font-weight: bold; text-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      position: relative;
+      min-height: 200px;
+    }
+    .opt {
+      padding: 14px;
+      border-radius: 12px;
+      border: 2px solid #e0efff;
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(10,20,40,0.08);
+    }
+    .opt:hover:not(.disabled) {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(10,20,40,0.12);
+    }
+    .opt.correct {
+      border-color: var(--success);
+      background: linear-gradient(180deg, #e6ffed, #d4ffe2);
+      box-shadow: 0 0 12px var(--success);
+      animation: bounce 0.3s ease;
+    }
+    .opt.wrong {
+      border-color: var(--error);
+      background: linear-gradient(180deg, #ffe6e6, #ffdede);
+      animation: wobble 0.4s ease;
+    }
+    .opt.disabled { pointer-events: none; opacity: 0.6; }
+    .controls {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      background: var(--accent);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 0;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+    }
+    .btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    .btn.ghost {
+      background: transparent;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+      text-shadow: none;
+    }
+    .small { font-size: 14px; color: #4a6f80; font-weight: bold; }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      font-size: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .score-box { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .badge {
+      background: #f8fbff;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: bold;
+      border: 1px solid #e0efff;
+    }
+    .result, .phase-screen { padding: 32px; text-align: center; position: relative; }
+    .result h2, .phase-screen h2 { font-size: 26px; margin: 0 0 12px 0; font-weight: bold; }
+    .explain {
+      margin-top: 16px;
+      background: #f0f8ff;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px dashed #d0e8ff;
+      color: #0a4a70;
+      font-size: 15px;
+      animation: fadeIn 0.5s ease;
+    }
+    .phase-screen {
+      display: none;
+      background: linear-gradient(180deg, #ffffff, #f0f8ff);
+    }
+    .timer { font-size: 16px; font-weight: bold; color: var(--accent-2); margin-bottom: 16px; }
+    canvas#confetti { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 1000; }
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.3;
+      z-index: 0;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes wobble {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px) rotate(-3deg); }
+      75% { transform: translateX(6px) rotate(3deg); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 640px) {
+      .options { grid-template-columns: 1fr; }
+      .qtext { font-size: 20px; }
+      .opt { font-size: 15px; padding: 12px; }
+      .btn { padding: 10px 16px; font-size: 14px; }
+      header h1 { font-size: 18px; }
+    }
   </style>
 </head>
 <body>
-  <div class="app" role="application">
+  <div class="app">
     <header>
       <div style="display:flex;flex-direction:column">
-        <h1>Quiz: Inteligência Artificial para Crianças 🤖</h1>
-        <p>Aprenda brincando — perguntas fáceis, explicações curtas e diversão!</p>
+        <h1>Quiz: Aventura da Inteligência Artificial 🤖🚀</h1>
+        <p>Explore, aprenda e divirta-se com IA!</p>
       </div>
       <div style="margin-left:auto;text-align:right">
-        <div class="small">Perguntas: <strong id="total">0</strong></div>
-        <div class="small">Mantenha a curiosidade viva! ✨</div>
+        <div class="small">Perguntas: <strong id="total">20</strong></div>
+        <div class="small">Vidas: <span id="lives">3</span> ❤️</div>
       </div>
     </header>
 
     <div class="content">
-      <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+      <div class="progress"><i id="bar"></i></div>
 
       <div class="card" id="quizCard">
         <div>
-          <div class="qtitle small">Pergunta <span id="index">1</span> de <span id="count">20</span></div>
+          <div class="qtitle small">Pergunta <span id="index">1</span> de <span id="count">20</span> | Fase <span id="phase">1</span></div>
           <h2 class="qtext" id="question">Carregando...</h2>
+          <div class="timer" id="timer" style="display:none">⏱️ Tempo: <span id="timeLeft">10</span>s</div>
         </div>
 
         <div class="options" id="options"></div>
@@ -65,258 +236,492 @@
         <div class="controls">
           <div class="score-box">
             <div class="badge">Pontuação: <span id="score">0</span></div>
-            <div class="small" style="margin-left:8px">Acertos: <span id="hits">0</span></div>
-          </div>
-          <div>
-            <button class="btn" id="prevBtn">Anterior</button>
-            <button class="btn" id="nextBtn">Próximo</button>
+            <div class="small">Acertos: <span id="hits">0</span></div>
           </div>
         </div>
 
         <div class="footer">
-          <div class="small">Dica: Responda, depois veja uma explicação curta ✅</div>
-          <div class="small">Tempo recomendado: 10–20s por pergunta</div>
+          <div class="small">💡 Dica: As respostas podem te enganar!</div>
+          <div class="small">🤖 Fique atento aos botões!</div>
         </div>
+      </div>
+
+      <div id="phaseScreen" class="card phase-screen">
+        <div class="stars">✨</div>
+        <h2 id="phaseTitle">Fase Concluída! 🎉</h2>
+        <p id="phaseMessage" style="font-size:18px;margin:16px 0">Você avançou na aventura!</p>
+        <button class="btn" id="continuePhase">Continuar Aventura 🚀</button>
       </div>
 
       <div id="result" style="display:none" class="card result">
-        <h2>Parabéns! 🎉</h2>
-        <p id="resultText">Você terminou o quiz.</p>
-        <div style="margin-top:12px">
-          <strong>Pontuação:</strong> <span id="finalScore">0</span> / <span id="maxScore">0</span>
+        <div class="stars">⭐</div>
+        <h2 id="resultTitle">Fim da Aventura! 🎉</h2>
+        <div style="margin:20px 0">
+          <div style="font-size:18px;margin-bottom:12px">
+            <strong>Pontuação Final:</strong> <span id="finalScore" style="font-size:24px;color:var(--accent)">0</span> / <span id="maxScore">200</span>
+          </div>
+          <div style="font-size:18px;margin-bottom:12px">
+            <strong>Acertos:</strong> <span id="finalHits">0</span> de <span id="totalQuestions">20</span>
+          </div>
+          <div style="font-size:32px;margin:16px 0">
+            <span id="starRating">★★★</span>
+          </div>
         </div>
         <div class="explain" id="finalMessage"></div>
-        <div style="margin-top:16px">
-          <button class="btn" id="restart">Refazer Quiz</button>
-          <button class="btn" id="download" style="margin-left:8px;background:#ff7ab6">Baixar resultados</button>
+        <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="btn" id="restart">🔄 Tentar Novamente</button>
+          <button class="btn" id="download" style="background:var(--accent-2)">📥 Baixar Resultados</button>
         </div>
       </div>
-
     </div>
   </div>
+  <canvas id="confetti"></canvas>
 
   <script>
-    // Lista de perguntas (20+) sobre IA em linguagem simples para crianças
     const QUESTIONS = [
-      {q: 'O que é Inteligência Artificial (IA)? 🤖',
-       opts: ['Um tipo de computador que aprende','Um brinquedo','Um filme','Um animal'],
-       a:0,
-       explain:'IA é quando computadores aprendem com exemplos para ajudar as pessoas.'},
-      {q: 'Onde podemos ver IA no dia a dia?',
-       opts: ['Em celulares e jogos','Só em filmes','Só em robôs gigantes','Em plantas'],
-       a:0,
-       explain:'IA está em nosso celular, em jogos, nas recomendações de vídeos e assistentes.'},
-      {q: 'O que um assistente virtual faz com IA?',
-       opts: ['Responde perguntas e ajuda','Faz mágica','Voa','Canta sozinho'],
-       a:0,
-       explain:'Siri, Alexa e Google Assistente usam IA para entender e responder.'},
-      {q: 'Como os jogos usam IA?',
-       opts: ['Para controlar inimigos e ajudar no jogo','Para dar comida ao jogador','Para desligar o console','Para mudar o controle'],
-       a:0,
-       explain:'A IA faz inimigos e personagens parecerem inteligentes e divertidos.'},
-      {q: 'A IA pode aprender sozinha?',
-       opts: ['Sim, aprendendo com exemplos','Não, ela só repete','Só se for mágica','Só em desenhos'],
-       a:0,
-       explain:'Alguns sistemas aprendem com muitos exemplos, como quando treinamos um cachorro.'},
-      {q: 'A IA tem sentimentos como nós?',
-       opts: ['Não, mas pode parecer que tem','Sim, exatamente iguais','Só quando quer','Depende do telefone'],
-       a:0,
-       explain:'IA não sente; ela só segue regras e padrões.'},
-      {q: 'Como a IA ajuda médicos?',
-       opts: ['Ajudando a descobrir doenças mais rápido','Fazendo remédios sozinha','Trocando curativos','Dando receitas de bolo'],
-       a:0,
-       explain:'IA pode analisar imagens e ajudar médicos a encontrar problemas cedo.'},
-      {q: 'Qual é um exemplo de IA que ajuda no dia a dia?',
-       opts: ['Recomendação de vídeos no YouTube','Lápis e borracha','Mesa','Chaveiro'],
-       a:0,
-       explain:'Plataformas usam IA para sugerir vídeos que você provavelmente vai gostar.'},
-      {q: 'A IA é sempre boa?',
-       opts: ['Depende de como as pessoas a usam','Sempre boa','Sempre má','É só brincadeira'],
-       a:0,
-       explain:'IA pode ajudar muito, mas se usada errado pode causar problemas.'},
-      {q: 'O que é "dados" para a IA?',
-       opts: ['Informações que ajudam a IA aprender','Comida para robôs','Brinquedos','Roupas'],
-       a:0,
-       explain:'Dados são exemplos e informações usados para ensinar a IA.'},
-      {q: 'Como a IA aprende a reconhecer imagens?',
-       opts: ['Mostrando muitas imagens e dizendo o que é','Apenas olhando uma vez','Escutando música','Falando alto'],
-       a:0,
-       explain:'Ela vê muitas imagens e aprende quais características importam.'},
-      {q: 'O que é um robô com IA?',
-       opts: ['Um robô que pode tomar decisões simples','Um boneco de pelúcia','Uma lâmpada','Uma cadeira'],
-       a:0,
-       explain:'Robôs com IA podem realizar tarefas e responder ao ambiente.'},
-      {q: 'IA pode ajudar nas tarefas da escola?',
-       opts: ['Sim, oferecendo explicações e jogos educativos','Não, só atrapalha','Só faz a lição por você','Só serve para jogar'],
-       a:0,
-       explain:'Ferramentas educativas com IA explicam e adaptam o conteúdo ao ritmo da criança.'},
-      {q: 'O que é "treinar" uma IA?',
-       opts: ['Mostrar muitos exemplos para que ela aprenda','Gritar com o computador','Colocar roupa no robô','Deixar ela dormir'],
-       a:0,
-       explain:'Treinar é ensinar: mostrar exemplos e dizer o que é certo.'},
-      {q: 'Quem cria a IA?',
-       opts: ['Pessoas chamadas desenvolvedores e cientistas','Robôs sozinhos','O vento','As plantas'],
-       a:0,
-       explain:'Pessoas escrevem programas e montam os exemplos para ensinar a IA.'},
-      {q: 'IA pode errar?',
-       opts: ['Sim, porque aprende de exemplos imperfeitos','Não, ela acerta sempre','Só erra quando chove','Só erra de noite'],
-       a:0,
-       explain:'Se os exemplos estiverem errados, a IA pode aprender errado também.'},
-      {q: 'O que significa "algoritmo"?',
-       opts: ['Receita de passos que o computador segue','Um tipo de comida','Um brinquedo','Uma música'],
-       a:0,
-       explain:'Algoritmo é um conjunto de passos (como uma receita) que a IA segue.'},
-      {q: 'Como podemos usar IA com segurança?',
-       opts: ['Com regras e pessoas cuidando do uso','Deixar sem supervisão','Nunca usar','Somente à noite'],
-       a:0,
-       explain:'Regras, privacidade e supervisão ajudam a IA ser segura e justa.'},
-      {q: 'Por que a IA é útil?',
-       opts: ['Porque ajuda a resolver problemas rápidos e repetitivos','Porque faz bagunça','Porque substitui brincadeiras','Porque cozinha sozinho'],
-       a:0,
-       explain:'IA ajuda em tarefas repetitivas e permite que pessoas foquem no que importa.'},
-      {q: 'O que você pode aprender brincando com IA?',
-       opts: ['A programar, a pensar criticamente e a ser curioso','A dormir mais','A não estudar','A correr mais rápido'],
-       a:0,
-       explain:'Brincando com ferramentas de IA você aprende lógica, curiosidade e programação simples.'}
+      {q: 'O que é Inteligência Artificial (IA)? 🤖', opts: ['Um tipo de computador que aprende','Um brinquedo','Um filme','Um animal'], a: 0, explain: 'IA é quando computadores aprendem com exemplos para ajudar as pessoas.'},
+      {q: 'Onde podemos ver IA no dia a dia?', opts: ['Em celulares e jogos','Só em filmes','Só em robôs gigantes','Em plantas'], a: 0, explain: 'IA está em nosso celular, em jogos, nas recomendações de vídeos e assistentes.'},
+      {q: 'O que um assistente virtual faz?', opts: ['Responde perguntas e ajuda','Faz mágica','Come pizza','Voa'], a: 0, explain: 'Assistentes virtuais como Alexa e Siri usam IA para responder perguntas.'},
+      {q: 'Como a IA aprende?', opts: ['Com muitos exemplos','Sozinha sem ajuda','Por telepatia','Comendo dados'], a: 0, explain: 'IA aprende analisando muitos exemplos, como mostrar fotos de gatos para reconhecê-los.'},
+      {q: 'Qual destes usa IA para recomendar vídeos?', opts: ['YouTube','Caderno','Lápis','Mesa'], a: 0, explain: 'YouTube usa IA para sugerir vídeos que você pode gostar baseado no que assistiu.'},
+      
+      {q: 'O que é Machine Learning?', opts: ['Aprendizado de máquina','Máquina de lavar','Bicicleta','Videogame'], a: 0, explain: 'Machine Learning é quando computadores aprendem padrões nos dados.'},
+      {q: 'Qual animal os cientistas estudam para criar robôs?', opts: ['Todos os animais','Apenas dinossauros','Só plantas','Nenhum'], a: 0, explain: 'Cientistas observam vários animais para criar robôs inspirados na natureza.'},
+      {q: 'O que é um chatbot?', opts: ['Programa que conversa','Um brinquedo','Uma comida','Uma planta'], a: 0, explain: 'Chatbots são programas que usam IA para conversar com pessoas.'},
+      {q: 'A IA pode ajudar médicos?', opts: ['Sim, analisando exames','Não, nunca','Só em filmes','Apenas em jogos'], a: 0, explain: 'IA pode ajudar médicos a identificar doenças em imagens de raio-X.'},
+      {q: 'O que são dados para a IA?', opts: ['Informações que ela aprende','Comida','Brinquedos','Roupas'], a: 0, explain: 'Dados são informações (texto, imagens, números) que a IA usa para aprender.'},
+      
+      {q: 'Robôs podem ter sentimentos de verdade?', opts: ['Não, apenas simulam','Sim, todos têm','Só os grandes','Só os pequenos'], a: 0, explain: 'Robôs não têm sentimentos reais, mas podem simular emoções.'},
+      {q: 'O que é reconhecimento facial?', opts: ['IA identifica rostos','Um jogo','Um tipo de dança','Uma receita'], a: 0, explain: 'Reconhecimento facial usa IA para identificar pessoas por suas faces.'},
+      {q: 'A IA pode criar músicas?', opts: ['Sim, pode compor','Não, nunca','Só rock','Só clássica'], a: 0, explain: 'IA pode compor músicas analisando milhares de canções existentes.'},
+      {q: 'O que são algoritmos?', opts: ['Passos para resolver problemas','Animais','Planetas','Comidas'], a: 0, explain: 'Algoritmos são sequências de instruções que computadores seguem.'},
+      {q: 'A IA pode dirigir carros?', opts: ['Sim, carros autônomos','Não, nunca','Só caminhões','Só aviões'], a: 0, explain: 'Carros autônomos usam IA para dirigir sem motorista humano.'},
+      
+      {q: 'O que é Deep Learning?', opts: ['IA que aprende camadas profundas','Mergulho','Um jogo','Uma música'], a: 0, explain: 'Deep Learning usa redes neurais com muitas camadas para aprender tarefas complexas.'},
+      {q: 'A IA pode traduzir idiomas?', opts: ['Sim, traduz textos','Não, nunca','Só inglês','Só espanhol'], a: 0, explain: 'Ferramentas como Google Tradutor usam IA para traduzir entre idiomas.'},
+      {q: 'O que é uma rede neural?', opts: ['Modelo inspirado no cérebro','Uma rede de pesca','Internet','Um jogo'], a: 0, explain: 'Redes neurais imitam como neurônios no cérebro se conectam.'},
+      {q: 'A IA pode ajudar o meio ambiente?', opts: ['Sim, monitorando poluição','Não, nunca','Só em filmes','Só no espaço'], a: 0, explain: 'IA pode analisar dados ambientais e ajudar a combater mudanças climáticas.'},
+      {q: 'Por que devemos usar IA com responsabilidade?', opts: ['Para não prejudicar pessoas','Porque é difícil','Para ser rápido','Para ganhar dinheiro'], a: 0, explain: 'IA deve ser usada de forma ética para beneficiar a todos sem causar danos.'}
     ];
 
-    // App state
-    let index = 0;
-    let score = 0;
-    let hits = 0;
-    const total = QUESTIONS.length;
+    let state = {
+      index: 0,
+      score: 0,
+      hits: 0,
+      lives: 3,
+      phase: 1,
+      total: QUESTIONS.length,
+      answered: false,
+      timerId: null
+    };
 
-    // Elements
-    const questionEl = document.getElementById('question');
-    const optionsEl = document.getElementById('options');
-    const indexEl = document.getElementById('index');
-    const countEl = document.getElementById('count');
-    const scoreEl = document.getElementById('score');
-    const hitsEl = document.getElementById('hits');
-    const barEl = document.getElementById('bar');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const resultCard = document.getElementById('result');
-    const quizCard = document.getElementById('quizCard');
-    const totalEl = document.getElementById('total');
-    const finalScoreEl = document.getElementById('finalScore');
-    const maxScoreEl = document.getElementById('maxScore');
-    const finalMessage = document.getElementById('finalMessage');
+    const els = {
+      question: document.getElementById('question'),
+      options: document.getElementById('options'),
+      index: document.getElementById('index'),
+      count: document.getElementById('count'),
+      phase: document.getElementById('phase'),
+      score: document.getElementById('score'),
+      hits: document.getElementById('hits'),
+      lives: document.getElementById('lives'),
+      bar: document.getElementById('bar'),
+      quizCard: document.getElementById('quizCard'),
+      phaseScreen: document.getElementById('phaseScreen'),
+      phaseTitle: document.getElementById('phaseTitle'),
+      phaseMessage: document.getElementById('phaseMessage'),
+      continuePhase: document.getElementById('continuePhase'),
+      result: document.getElementById('result'),
+      resultTitle: document.getElementById('resultTitle'),
+      total: document.getElementById('total'),
+      finalScore: document.getElementById('finalScore'),
+      finalHits: document.getElementById('finalHits'),
+      totalQuestions: document.getElementById('totalQuestions'),
+      maxScore: document.getElementById('maxScore'),
+      starRating: document.getElementById('starRating'),
+      finalMessage: document.getElementById('finalMessage'),
+      timer: document.getElementById('timer'),
+      timeLeft: document.getElementById('timeLeft'),
+      confetti: document.getElementById('confetti'),
+      restart: document.getElementById('restart'),
+      download: document.getElementById('download')
+    };
 
-    totalEl.textContent = total;
-    countEl.textContent = total;
+    function shuffle(arr) {
+      const array = [...arr];
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
 
-    function render(){
-      const item = QUESTIONS[index];
-      indexEl.textContent = index+1;
-      questionEl.textContent = item.q;
-      optionsEl.innerHTML = '';
-      item.opts.forEach((opt,i)=>{
+    function triggerConfetti() {
+      const canvas = els.confetti;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const particles = [];
+      
+      for (let i = 0; i < 80; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          size: Math.random() * 8 + 4,
+          speedX: Math.random() * 4 - 2,
+          speedY: Math.random() * 3 + 2,
+          color: `hsl(${Math.random() * 360}, 80%, 60%)`
+        });
+      }
+      
+      let frame = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.x += p.speedX;
+          p.y += p.speedY;
+          p.speedY += 0.1;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        frame++;
+        if (frame < 120) {
+          requestAnimationFrame(animate);
+        } else {
+          canvas.style.display = 'none';
+        }
+      }
+      canvas.style.display = 'block';
+      animate();
+    }
+
+    function updateProgress() {
+      const pct = Math.round(((state.index + 1) / state.total) * 100);
+      els.bar.style.width = pct + '%';
+      els.score.textContent = state.score;
+      els.hits.textContent = state.hits;
+      els.lives.textContent = state.lives;
+      els.index.textContent = state.index + 1;
+      els.phase.textContent = state.phase;
+    }
+
+    function render() {
+      const item = QUESTIONS[state.index];
+      state.answered = false;
+      
+      els.question.textContent = item.q;
+      els.options.innerHTML = '';
+      els.timer.style.display = 'none';
+      
+      const shuffled = shuffle(item.opts.map((opt, i) => ({ text: opt, index: i })));
+      
+      shuffled.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = 'opt';
-        btn.textContent = opt;
-        btn.setAttribute('data-i', i);
-        btn.addEventListener('click', onAnswer);
-        optionsEl.appendChild(btn);
+        btn.textContent = opt.text;
+        btn.dataset.index = opt.index;
+        btn.onclick = () => handleAnswer(opt.index);
+        btn.onmouseenter = () => handleHover(btn, opt.index);
+        els.options.appendChild(btn);
       });
+      
       updateProgress();
-    }
-
-    function updateProgress(){
-      const pct = Math.round(((index+1)/total)*100);
-      barEl.style.width = pct + '%';
-      scoreEl.textContent = score;
-      hitsEl.textContent = hits;
-    }
-
-    function onAnswer(e){
-      const btn = e.currentTarget;
-      const chosen = Number(btn.getAttribute('data-i'));
-      const correct = QUESTIONS[index].a;
-
-      // disable future clicks
-      Array.from(optionsEl.children).forEach(b=>b.disabled = true);
-
-      if(chosen === correct){
-        btn.classList.add('correct');
-        score += 10; hits += 1;
-      } else {
-        btn.classList.add('wrong');
-        // highlight correct
-        const correctBtn = Array.from(optionsEl.children).find(b=>Number(b.getAttribute('data-i'))===correct);
-        if(correctBtn) correctBtn.classList.add('correct');
+      
+      const bonusChance = Math.random() < 0.15 && state.index > 0;
+      if (bonusChance) {
+        startTimer();
       }
+      
+      enableTrickMode();
+    }
+    
+    function handleHover(btn, optIndex) {
+      const correct = QUESTIONS[state.index].a;
+      
+      if (optIndex !== correct && Math.random() < 0.25) {
+        btn.style.transform = 'scale(1.15) rotate(5deg)';
+        btn.style.borderColor = 'var(--success)';
+        setTimeout(() => {
+          btn.style.transform = '';
+          btn.style.borderColor = '';
+        }, 300);
+      }
+      
+      if (optIndex === correct && Math.random() < 0.2) {
+        btn.style.transform = 'scale(0.9)';
+        btn.style.opacity = '0.5';
+        setTimeout(() => {
+          btn.style.transform = '';
+          btn.style.opacity = '';
+        }, 300);
+      }
+    }
+    
+    function enableTrickMode() {
+      if (Math.random() < 0.3 && state.index > 2) {
+        const correct = QUESTIONS[state.index].a;
+        const buttons = Array.from(els.options.querySelectorAll('.opt'));
+        const correctBtn = buttons.find(b => parseInt(b.dataset.index) === correct);
+        
+        if (correctBtn && Math.random() < 0.4) {
+          correctBtn.dataset.dodgeCount = 0;
+          correctBtn.onclick = function(e) {
+            const dodges = parseInt(this.dataset.dodgeCount || 0);
+            if (dodges < 2 && Math.random() < 0.6) {
+              this.dataset.dodgeCount = dodges + 1;
+              
+              const container = els.options;
+              const maxX = container.offsetWidth - this.offsetWidth - 32;
+              const maxY = container.offsetHeight - this.offsetHeight - 32;
+              
+              this.style.position = 'absolute';
+              this.style.left = Math.max(16, Math.random() * maxX) + 'px';
+              this.style.top = Math.max(16, Math.random() * maxY) + 'px';
+              this.style.transition = 'all 0.3s ease';
+              
+              const taunt = ['😜 Opa!', '🤪 Quase!', '😆 Tente de novo!', '🎯 Me pegue!'];
+              const oldText = this.textContent;
+              this.textContent = taunt[Math.floor(Math.random() * taunt.length)];
+              
+              setTimeout(() => {
+                this.textContent = oldText;
+              }, 800);
+              
+              e.stopPropagation();
+              return;
+            }
+            
+            this.style.position = 'relative';
+            this.style.left = '0';
+            this.style.top = '0';
+            handleAnswer(correct);
+          };
+        }
+        
+        if (Math.random() < 0.3) {
+          setTimeout(() => {
+            buttons.forEach((btn, i) => {
+              setTimeout(() => {
+                btn.style.transition = 'transform 0.3s ease';
+                btn.style.transform = 'translateX(' + (Math.random() * 20 - 10) + 'px)';
+                setTimeout(() => {
+                  btn.style.transform = '';
+                }, 400);
+              }, i * 100);
+            });
+          }, 1000);
+        }
+      }
+      
+      if (Math.random() < 0.2) {
+        setTimeout(() => {
+          const wrongButtons = Array.from(els.options.querySelectorAll('.opt'))
+            .filter(b => parseInt(b.dataset.index) !== QUESTIONS[state.index].a);
+          
+          wrongButtons.forEach(btn => {
+            if (Math.random() < 0.3) {
+              btn.style.boxShadow = '0 0 20px rgba(40, 167, 69, 0.6)';
+              setTimeout(() => {
+                btn.style.boxShadow = '';
+              }, 1500);
+            }
+          });
+        }, 500);
+      }
+    }
 
-      // show short explanation
+    function startTimer() {
+      els.timer.style.display = 'block';
+      let timeLeft = 10;
+      els.timeLeft.textContent = timeLeft;
+      
+      state.timerId = setInterval(() => {
+        timeLeft--;
+        els.timeLeft.textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
+          clearInterval(state.timerId);
+          if (!state.answered) {
+            handleAnswer(-1);
+          }
+        }
+      }, 1000);
+    }
+
+    function handleAnswer(chosen) {
+      if (state.answered) return;
+      
+      state.answered = true;
+      
+      if (state.timerId) {
+        clearInterval(state.timerId);
+        els.timer.style.display = 'none';
+      }
+      
+      const correct = QUESTIONS[state.index].a;
+      const buttons = els.options.querySelectorAll('.opt');
+      
+      buttons.forEach(btn => {
+        btn.classList.add('disabled');
+        btn.style.position = 'relative';
+        btn.style.left = '0';
+        btn.style.top = '0';
+        const btnIndex = parseInt(btn.dataset.index);
+        
+        if (btnIndex === correct) {
+          btn.classList.add('correct');
+        } else if (btnIndex === chosen) {
+          btn.classList.add('wrong');
+          
+          if (Math.random() < 0.15) {
+            const taunts = ['😂 Haha!', '🤖 Você caiu!', '😈 Te peguei!', '🎪 Surpresa!'];
+            btn.textContent = taunts[Math.floor(Math.random() * taunts.length)];
+            setTimeout(() => {
+              btn.textContent = QUESTIONS[state.index].opts[btnIndex];
+            }, 1000);
+          }
+        }
+      });
+      
+      if (chosen === correct) {
+        state.score += 10;
+        state.hits++;
+      } else {
+        state.lives--;
+        
+        if (Math.random() < 0.1) {
+          const wrongBtn = Array.from(buttons).find(b => parseInt(b.dataset.index) === chosen);
+          if (wrongBtn) {
+            wrongBtn.style.borderColor = 'var(--success)';
+            setTimeout(() => {
+              wrongBtn.style.borderColor = 'var(--error)';
+            }, 400);
+          }
+        }
+      }
+      
       const expl = document.createElement('div');
       expl.className = 'explain';
-      expl.textContent = QUESTIONS[index].explain;
-      quizCard.appendChild(expl);
-
+      expl.textContent = QUESTIONS[state.index].explain;
+      els.quizCard.appendChild(expl);
+      
       updateProgress();
+      
+      setTimeout(() => {
+        expl.remove();
+        
+        if (state.lives <= 0) {
+          endQuiz('gameover');
+        } else if (state.index >= state.total - 1) {
+          endQuiz('complete');
+        } else if ((state.index + 1) % 5 === 0) {
+          showPhaseScreen();
+        } else {
+          state.index++;
+          state.phase = Math.floor(state.index / 5) + 1;
+          render();
+        }
+      }, 2500);
     }
 
-    prevBtn.addEventListener('click', ()=>{
-      if(index>0){
-        index -= 1; resetCard(); render();
-      }
-    });
-
-    nextBtn.addEventListener('click', ()=>{
-      if(index < total-1){
-        index += 1; resetCard(); render();
-      } else {
-        // finish
-        finishQuiz();
-      }
-    });
-
-    function resetCard(){
-      // remove explanation if exists
-      const ex = quizCard.querySelector('.explain');
-      if(ex) ex.remove();
+    function showPhaseScreen() {
+      els.quizCard.style.display = 'none';
+      els.phaseScreen.style.display = 'block';
+      
+      const phaseNames = ['Explorador de IA', 'Mestre dos Robôs', 'Cientista de Dados', 'Gênio da IA'];
+      const currentPhase = Math.floor(state.index / 5);
+      
+      els.phaseTitle.textContent = `Fase ${currentPhase + 1} Concluída! 🎉`;
+      els.phaseMessage.textContent = `Parabéns! Você é agora um "${phaseNames[currentPhase]}"! Continue sua jornada pelo mundo da IA!`;
+      
+      triggerConfetti();
     }
 
-    function finishQuiz(){
-      quizCard.style.display = 'none';
-      resultCard.style.display = 'block';
-      finalScoreEl.textContent = score;
-      maxScoreEl.textContent = total*10;
-      // message
-      const pct = Math.round((score/(total*10))*100);
+    els.continuePhase.onclick = () => {
+      els.phaseScreen.style.display = 'none';
+      els.quizCard.style.display = 'block';
+      state.index++;
+      state.phase = Math.floor(state.index / 5) + 1;
+      render();
+    };
+
+    function endQuiz(status) {
+      els.quizCard.style.display = 'none';
+      els.phaseScreen.style.display = 'none';
+      els.result.style.display = 'block';
+      
+      els.finalScore.textContent = state.score;
+      els.finalHits.textContent = state.hits;
+      els.totalQuestions.textContent = state.total;
+      els.maxScore.textContent = state.total * 10;
+      
+      const pct = Math.round((state.hits / state.total) * 100);
       let msg = '';
-      if(pct >= 80) msg = 'Excelente! Você entendeu muito bem sobre IA 🚀';
-      else if(pct >= 50) msg = 'Muito bem! Continue praticando e aprendendo ✨';
-      else msg = 'Ótimo começo! Continue curioso e tente de novo 🙂';
-      finalMessage.textContent = msg + '\n\nLembre-se: IA ajuda as pessoas quando usada com responsabilidade.';
+      let stars = '★☆☆';
+      let title = 'Fim da Aventura! 🎉';
+      
+      if (status === 'gameover') {
+        title = 'Game Over! 😢';
+        msg = 'Você ficou sem vidas, mas foi uma grande aventura! A prática leva à perfeição. Tente novamente e mostre do que você é capaz!';
+        stars = '☆☆☆';
+      } else {
+        if (pct >= 80) {
+          msg = 'Incrível! Você é um verdadeiro Gênio da IA! 🚀 Seu conhecimento sobre inteligência artificial é excepcional!';
+          stars = '★★★';
+          triggerConfetti();
+        } else if (pct >= 60) {
+          msg = 'Muito bem! Você tem um ótimo entendimento sobre IA! ✨ Continue explorando este fascinante mundo da tecnologia!';
+          stars = '★★☆';
+        } else {
+          msg = 'Bom começo! Continue curioso e explorando! 🙂 Cada pergunta é uma oportunidade de aprender algo novo sobre IA!';
+          stars = '★☆☆';
+        }
+      }
+      
+      els.resultTitle.textContent = title;
+      els.finalMessage.textContent = msg + '\n\n🤖 Lembre-se: A Inteligência Artificial é uma ferramenta poderosa que deve ser usada com responsabilidade para ajudar as pessoas e tornar o mundo melhor!';
+      els.starRating.textContent = stars;
     }
 
-    document.getElementById('restart').addEventListener('click', ()=>{
-      // reset state
-      index = 0; score = 0; hits = 0;
-      quizCard.style.display = 'block';
-      resultCard.style.display = 'none';
-      resetCard(); render(); updateProgress();
-    });
-
-    document.getElementById('download').addEventListener('click', ()=>{
-      const results = {
-        totalQuestions: total,
-        score, hits,
-        date: new Date().toISOString()
+    els.restart.onclick = () => {
+      state = {
+        index: 0,
+        score: 0,
+        hits: 0,
+        lives: 3,
+        phase: 1,
+        total: QUESTIONS.length,
+        answered: false,
+        timerId: null
       };
-      const blob = new Blob([JSON.stringify(results, null, 2)], {type:'application/json'});
+      
+      els.result.style.display = 'none';
+      els.quizCard.style.display = 'block';
+      render();
+    };
+
+    els.download.onclick = () => {
+      const results = {
+        totalPerguntas: state.total,
+        pontuacao: state.score,
+        acertos: state.hits,
+        vidasRestantes: state.lives,
+        faseAlcancada: state.phase,
+        data: new Date().toLocaleString('pt-BR')
+      };
+      
+      const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'resultado_quiz_ia.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'resultado_quiz_ia.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    };
 
-    // Keyboard navigation
-    window.addEventListener('keydown', (e)=>{
-      if(e.key === 'ArrowRight') nextBtn.click();
-      if(e.key === 'ArrowLeft') prevBtn.click();
-    });
-
-    // initial render
     render();
   </script>
 </body>
